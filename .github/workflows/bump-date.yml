@@ -1,59 +1,40 @@
-#
-# bump-date.yml
-# Bump the distribution date once per day
-#
+name: Build Marlin Firmware
 
-name: Bump Distribution Date
-
+# Workflow odpala się przy push do main i ręcznie
 on:
-  schedule:
-    - cron: '0 */6 * * *'
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  bump_date:
-    name: Bump Distribution Date
-    if: github.repository == 'MarlinFirmware/Marlin'
-
-    runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-latest
+    name: Build Marlin
 
     steps:
+    # 1️⃣ Pobranie repozytorium
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Check out bugfix-2.0.x
-      uses: actions/checkout@v4
+    # 2️⃣ Ustawienie Pythona potrzebnego do PlatformIO
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        ref: bugfix-2.0.x
+        python-version: '3.10'
 
-    - name: Bump Date (bugfix-2.0.x)
+    # 3️⃣ Instalacja PlatformIO
+    - name: Install PlatformIO
       run: |
-        # Inline Bump Script
-        if [[ ! "$( git log -1 --pretty=%B )" =~ ^\[cron\] ]]; then
-          DIST=$( date +"%Y-%m-%d" )
-          eval "sed -E -i 's/(#define +STRING_DISTRIBUTION_DATE) .*$/\1 \"$DIST\"/g' Marlin/src/inc/Version.h" && \
-          eval "sed -E -i 's/(#define +STRING_DISTRIBUTION_DATE) .*$/\1 \"$DIST\"/g' Marlin/Version.h" && \
-          git config user.name "${GITHUB_ACTOR}" && \
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com" && \
-          git add . && \
-          git commit -m "[cron] Bump distribution date ($DIST)" && \
-          git push
-        fi
-        exit 0
+        python -m pip install --upgrade pip
+        pip install platformio
 
-    - name: Check out bugfix-2.1.x
-      uses: actions/checkout@v4
+    # 4️⃣ Budowanie firmware
+    - name: Build firmware
+      run: pio run -e STM32F103RET6_creality -d Marlin
+
+    # 5️⃣ Upload pliku firmware.bin jako artefaktu
+    - name: Upload Firmware Artifact
+      uses: actions/upload-artifact@v4
       with:
-        ref: bugfix-2.1.x
-
-    - name: Bump Date (bugfix-2.1.x)
-      run: |
-        # Inline Bump Script
-        if [[ ! "$( git log -1 --pretty=%B )" =~ ^\[cron\] ]]; then
-          DIST=$( date +"%Y-%m-%d" )
-          eval "sed -E -i 's/(#define +STRING_DISTRIBUTION_DATE) .*$/\1 \"$DIST\"/g' Marlin/src/inc/Version.h" && \
-          eval "sed -E -i 's/(#define +STRING_DISTRIBUTION_DATE) .*$/\1 \"$DIST\"/g' Marlin/Version.h" && \
-          git config user.name "${GITHUB_ACTOR}" && \
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com" && \
-          git add . && \
-          git commit -m "[cron] Bump distribution date ($DIST)" && \
-          git push
-        fi
-        exit 0
+        name: firmware
+        path: Marlin/.pio/build/STM32F103RET6_creality/firmware.bin
