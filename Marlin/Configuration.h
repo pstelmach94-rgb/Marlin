@@ -1993,7 +1993,7 @@
 
 #endif
 
-#if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
+//#if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
   #define GRID_MAX_POINTS_X 5
@@ -3330,7 +3330,7 @@
 //#define RGB_LED
 //#define RGBW_LED
 
-#if EITHER(RGB_LED, RGBW_LED)
+//#if EITHER(RGB_LED, RGBW_LED)
   //#define RGB_LED_R_PIN 34
   //#define RGB_LED_G_PIN 43
   //#define RGB_LED_B_PIN 35
