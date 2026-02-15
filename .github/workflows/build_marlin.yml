@@ -27,13 +27,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install platformio
 
-      # 4️⃣ Build firmware
+      # 4️⃣ Build firmware (CREALITY 4.2.2)
       - name: Build firmware
-        run: pio run -e STM32F103RC_creality
+        run: pio run -e STM32F103RET6_creality
 
       # 5️⃣ Upload firmware.bin jako artefakt
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
           name: firmware
-          path: .pio/build/STM32F103RC_creality/firmware.bin
+          path: .pio/build/STM32F103RET6_creality/firmware.bin
