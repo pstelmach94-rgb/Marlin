@@ -30,7 +30,7 @@ jobs:
 
     # 4️⃣ Budowanie firmware
     - name: Build firmware
-      run: pio run -e STM32F103RET6_creality -d Marlin
+      run: pio run -e STM32F103RET6_creality
 
     # 5️⃣ Upload pliku firmware.bin jako artefaktu
     - name: Upload Firmware Artifact
