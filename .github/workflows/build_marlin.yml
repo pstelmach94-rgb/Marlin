@@ -30,7 +30,7 @@ jobs:
 
     # 4️⃣ Budowanie firmware
     - name: Build firmware
-      run: pio run -e STM32F103RC_creality  # Używamy zmienionego środowiska
+      run: pio run -e STM32F103RC_creality_v42  # Poprawione środowisko
 
     # 5️⃣ Upload pliku firmware.bin jako artefaktu
     - name: Upload Firmware Artifact
